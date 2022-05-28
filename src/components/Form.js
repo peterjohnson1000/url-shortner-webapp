@@ -24,10 +24,10 @@ const Form = () => {
     });
 
     // validate the user input
-    // var isFormValid = validateInput();
-    // if (!isFormValid) {
-    //   return;
-    // }
+    var isFormValid = validateInput();
+    if (!isFormValid) {
+      return;
+    }
 
     var generatedKey = nanoid(5);
     var generatedURL = "smallurl.com/" + generatedKey;
@@ -43,6 +43,7 @@ const Form = () => {
           ...formData,
           generatedURL: generatedURL,
           loading: false,
+          errors: [],
         });
       })
       .catch((e) => {
@@ -52,45 +53,45 @@ const Form = () => {
 
   //haserror
   //Checks if feild has an error
-  // const hasError = (key) => {
-  //   return formData.errors.indexOf(key) !== -1;
-  // };
+  const hasError = (key) => {
+    return formData.errors.indexOf(key) !== -1;
+  };
 
-  // //handle change
-  // //Save the content of the form as the user is typing!
-  // const handleChange = (e) => {
-  //   const { id, value } = e.target;
-  //   setFormData((prevState) => ({
-  //     ...formData,
-  //     [id]: value,
-  //   }));
-  // };
+  // handle change
+  // Save the content of the form as the user is typing!
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(() => ({
+      ...formData,
+      [id]: value,
+    }));
+  };
 
-  // const validateInput = () => {
-  //   var errors = [];
-  //   var errorMessages = formData.errorMessages;
+  const validateInput = () => {
+    var errors = [];
+    var errorMessages = formData.errorMessages;
 
-  //   //Validate Long URL
-  //   if (formData.longURL.length === 0) {
-  //     errors.push("longURL");
-  //     errorMessages["longURL"] = "Please enter your URL!";
-  //   } else if (!isWebUri(formData.longURL)) {
-  //     errors.push("longURL");
-  //     errorMessages["longURL"] = "Please a URL in the form of https://www....";
-  //   }
+    //Validate Long URL
+    if (formData.longURL.length === 0) {
+      errors.push("longURL");
+      errorMessages["longURL"] = "Please enter your URL!";
+    } else if (!isWebUri(formData.longURL)) {
+      errors.push("longURL");
+      errorMessages["longURL"] = "Please a URL in the form of https://www....";
+    }
 
-  //   setFormData({
-  //     ...formData,
-  //     errors: errors,
-  //     errorMessages: errorMessages,
-  //     loading: false,
-  //   });
+    setFormData({
+      ...formData,
+      errors: errors,
+      errorMessages: errorMessages,
+      // loading: false,
+    });
 
-  //   if (errors.length > 0) {
-  //     return false;
-  //   }
-  //   return true;
-  // };
+    if (errors.length > 0) {
+      return false;
+    }
+    return true;
+  };
 
   const copyToClipBoard = () => {
     navigator.clipboard.writeText(formData.generatedURL);
@@ -109,13 +110,20 @@ const Form = () => {
           <label>Enter Your Long URL</label>
           <input
             id="longURL"
-            // onChange={handleChange}
-            // value={formData.longURL}
+            onChange={handleChange}
+            value={formData.longURL}
             type="url"
             required
             placeholder="https://www..."
-            className="form-control"
+            className={
+              hasError("longURL") ? "form-control is-invalid" : "form-control"
+            }
           />
+        </div>
+        <div
+          className={hasError("longURL") ? "text-danger" : "visually-hidden"}
+        >
+          {formData.errorMessages.longURL}
         </div>
 
         <button className="btn btn-primary" type="button" onClick={onSubmit}>
