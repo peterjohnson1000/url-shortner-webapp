@@ -30,7 +30,7 @@ const Form = () => {
     }
 
     var generatedKey = nanoid(5);
-    var generatedURL = "smallurl.com/" + generatedKey;
+    var generatedURL = "smallurlmaker.herokuapp.com/" + generatedKey;
 
     const db = getDatabase();
     set(ref(db, "/" + generatedKey), {
